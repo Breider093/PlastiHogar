@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matriz Comparativa de Infraestructura Tecnológica — PLASTIHOGAR S.A.S.</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Bebas+Neue&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f4f1eb;
+  --paper: #faf8f3;
+  --ink: #1a1612;
+  --ink2: #3d3630;
+  --muted: #8c7f74;
+  --border: #d4ccc0;
+  --border2: #e8e2d8;
+  --accent: #c0392b;
+  --accent2: #2c3e50;
+  --accent3: #e67e22;
+  --critical: #c0392b;
+  --high: #e67e22;
+  --medium: #f39c12;
+  --low: #27ae60;
+  --info: #2980b9;
+  --stripe: rgba(0,0,0,0.025);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'IBM Plex Sans', sans-serif;
+  min-height: 100vh;
+}
+
+/* Grain texture */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  padding: 0;
+}
+
+/* ── HEADER ── */
+.header {
+  background: var(--accent2);
+  color: #fff;
+  padding: 32px 48px 28px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  border-bottom: 4px solid var(--accent);
+}
+
+.header-left h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(24px, 3.5vw, 46px);
+  letter-spacing: 2px;
+  line-height: 1;
+  color: #fff;
+}
+
+.header-left h1 em {
+  color: #f4d03f;
+  font-style: normal;
+}
+
+.header-left p {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 1px;
+  margin-top: 8px;
+}
+
+.header-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.meta-pill {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,0.8);
+  padding: 4px 12px;
+  letter-spacing: 1px;
+}
+
+.meta-pill.highlight {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ── CONTROLS BAR ── */
+.controls {
+  background: var(--paper);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 48px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.ctrl-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.filter-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-transform: uppercase;
+}
+
+.filter-btn:hover, .filter-btn.active {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+
+.filter-btn.f-critical.active { background: var(--critical); border-color: var(--critical); color: #fff; }
+.filter-btn.f-high.active { background: var(--high); border-color: var(--high); color: #fff; }
+.filter-btn.f-medium.active { background: var(--medium); border-color: var(--medium); color: #fff; }
+.filter-btn.f-low.active { background: var(--low); border-color: var(--low); color: #fff; }
+
+.search-box {
+  margin-left: auto;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.search-box input {
+  background: #fff;
+  border: 1px solid var(--border);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ink);
+  padding: 7px 12px 7px 30px;
+  width: 200px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.search-box input:focus { border-color: var(--accent2); }
+
+.search-box::before {
+  content: '⌕';
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+/* ── STATS STRIP ── */
+.stats-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  border-bottom: 1px solid var(--border);
+  background: var(--paper);
+}
+
+.stat-item {
+  padding: 16px 24px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: background 0.15s;
+}
+
+.stat-item:last-child { border-right: none; }
+.stat-item:hover { background: #fff; }
+
+.stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  line-height: 1;
+  letter-spacing: 1px;
+}
+
+.stat-lbl {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.stat-item.s-critical .stat-num { color: var(--critical); }
+.stat-item.s-high .stat-num { color: var(--high); }
+.stat-item.s-medium .stat-num { color: var(--medium); }
+.stat-item.s-low .stat-num { color: var(--low); }
+.stat-item.s-total .stat-num { color: var(--accent2); }
+
+/* ── TABLE WRAPPER ── */
+.table-outer {
+  overflow-x: auto;
+  padding: 0;
+  background: var(--paper);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1600px;
+  font-size: 12px;
+}
+
+/* Sticky header */
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+thead tr {
+  background: var(--ink);
+}
+
+thead th {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.9);
+  padding: 14px 14px;
+  text-align: left;
+  white-space: nowrap;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+
+thead th:hover { background: rgba(255,255,255,0.08); }
+thead th:last-child { border-right: none; }
+
+thead th .sort-arrow {
+  display: inline-block;
+  margin-left: 4px;
+  opacity: 0.35;
+  font-size: 8px;
+}
+
+thead th.sorted .sort-arrow { opacity: 1; color: #f4d03f; }
+
+/* Col widths */
+th:nth-child(1) { min-width: 130px; } /* Asset */
+th:nth-child(2) { min-width: 160px; } /* Threat */
+th:nth-child(3) { min-width: 180px; } /* Vulnerability */
+th:nth-child(4) { min-width: 95px;  } /* Likelihood */
+th:nth-child(5) { min-width: 80px;  } /* Impact */
+th:nth-child(6) { min-width: 100px; } /* Risk Level */
+th:nth-child(7) { min-width: 180px; } /* Existing Control */
+th:nth-child(8) { min-width: 90px;  } /* Annex A Ref */
+th:nth-child(9) { min-width: 105px; } /* Residual Risk */
+th:nth-child(10){ min-width: 180px; } /* Treatment */
+th:nth-child(11){ min-width: 130px; } /* Responsible */
+th:nth-child(12){ min-width: 95px;  } /* Review Date */
+
+tbody tr {
+  border-bottom: 1px solid var(--border2);
+  transition: background 0.1s;
+  cursor: pointer;
+}
+
+tbody tr:nth-child(even) { background: var(--stripe); }
+tbody tr:hover { background: rgba(44,62,80,0.05); }
+
+tbody tr.hidden { display: none; }
+
+td {
+  padding: 13px 14px;
+  vertical-align: top;
+  line-height: 1.5;
+  color: var(--ink2);
+  border-right: 1px solid var(--border2);
+}
+
+td:last-child { border-right: none; }
+
+/* Asset cell */
+.asset-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.asset-name {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--ink);
+}
+
+.asset-type {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+  background: var(--border2);
+  padding: 2px 6px;
+  display: inline-block;
+}
+
+/* ID badge */
+.row-id {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+/* Likelihood dots */
+.likelihood-visual {
+  display: flex;
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.l-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+}
+
+.l-dot.filled { background: var(--ink); }
+
+.likelihood-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--ink2);
+}
+
+/* Impact bar */
+.impact-bar {
+  height: 5px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 4px;
+  width: 60px;
+}
+
+.impact-fill {
+  height: 100%;
+  border-radius: 2px;
+}
+
+.impact-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--ink2);
+}
+
+/* Risk Level badge */
+.risk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-left: 3px solid;
+}
+
+.risk-badge.critical { background: #fdecea; color: var(--critical); border-color: var(--critical); }
+.risk-badge.high     { background: #fef3e7; color: var(--high);     border-color: var(--high);     }
+.risk-badge.medium   { background: #fef9e7; color: var(--medium);   border-color: var(--medium);   }
+.risk-badge.low      { background: #eafaf1; color: var(--low);      border-color: var(--low);      }
+
+.risk-score {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* Annex ref */
+.annex-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--accent2);
+  background: rgba(44,62,80,0.07);
+  border: 1px solid rgba(44,62,80,0.15);
+  padding: 3px 7px;
+  display: inline-block;
+  letter-spacing: 0.5px;
+  margin: 1px 0;
+}
+
+/* Residual risk */
+.residual-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  border: 1px solid;
+}
+
+.residual-badge.critical { color: var(--critical); border-color: var(--critical); background: #fdecea; }
+.residual-badge.high     { color: var(--high);     border-color: var(--high);     background: #fef3e7; }
+.residual-badge.medium   { color: var(--medium);   border-color: var(--medium);   background: #fef9e7; }
+.residual-badge.low      { color: var(--low);      border-color: var(--low);      background: #eafaf1; }
+
+/* Treatment badge */
+.treatment-pill {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.treatment-pill.mitigate  { background: #d6eaf8; color: #1a5276; }
+.treatment-pill.avoid     { background: #f9ebea; color: #922b21; }
+.treatment-pill.transfer  { background: #fef9e7; color: #9a7d0a; }
+.treatment-pill.accept    { background: #eafaf1; color: #1e8449; }
+
+.treatment-text {
+  font-size: 11px;
+  color: var(--ink2);
+  line-height: 1.4;
+}
+
+/* Responsible */
+.resp-name {
+  font-weight: 600;
+  font-size: 11px;
+  color: var(--ink);
+}
+
+.resp-dept {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+/* Review date */
+.date-cell {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ink2);
+}
+
+.date-cell.urgent {
+  color: var(--critical);
+  font-weight: 600;
+}
+
+/* Empty state */
+.empty-state {
+  display: none;
+  text-align: center;
+  padding: 60px 24px;
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(26,22,18,0.75);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--accent);
+  max-width: 720px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  animation: modalIn 0.2s ease;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+@keyframes modalIn {
+  from { transform: translateY(16px) scale(0.98); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.modal-head {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  background: #fff;
+}
+
+.modal-head-left .mid {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.modal-head-left h2 {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  font-size: 18px;
+  color: var(--muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+  line-height: 1;
+}
+
+.modal-close:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+.modal-body {
+  padding: 20px 24px 28px;
+}
+
+.m-section {
+  margin-bottom: 20px;
+}
+
+.m-section-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border2);
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.m-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.m-field label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 3px;
+}
+
+.m-field p {
+  font-size: 13px;
+  color: var(--ink2);
+  line-height: 1.5;
+}
+
+.m-field.full { grid-column: span 2; }
+
+/* Risk score visual in modal */
+.score-visual {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  margin-top: 8px;
+}
+
+.score-big {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 52px;
+  line-height: 1;
+  letter-spacing: 1px;
+}
+
+.score-big.critical { color: var(--critical); }
+.score-big.high     { color: var(--high); }
+.score-big.medium   { color: var(--medium); }
+.score-big.low      { color: var(--low); }
+
+.score-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.score-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.score-bar {
+  width: 80px;
+  height: 6px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--ink);
+}
+
+/* Footer */
+.footer {
+  background: var(--ink);
+  color: rgba(255,255,255,0.5);
+  padding: 16px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.footer p {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+
+.footer .iso-ref {
+  color: #f4d03f;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .header { padding: 20px 20px; }
+  .controls { padding: 12px 20px; }
+  .stats-strip { grid-template-columns: repeat(3, 1fr); }
+  .m-grid { grid-template-columns: 1fr; }
+  .m-field.full { grid-column: span 1; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <h1>Matriz Comparativa de<br><em>Infraestructura Tecnológica</em></h1>
+      <p>PLASTIHOGAR S.A.S. · Diagnóstico y Análisis de Riesgos TI · 2025</p>
+    </div>
+    <div class="header-meta">
+      <div class="meta-pill highlight">ISO/IEC 27001:2022</div>
+      <div class="meta-pill">Annex A · Controles de Seguridad</div>
+      <div class="meta-pill">Barranquilla, Colombia</div>
+      <div class="meta-pill">Rev. 1.0 · 2025</div>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <span class="ctrl-label">Filtrar por nivel:</span>
+    <button class="filter-btn active" onclick="filterRisk('all', this)">Todos</button>
+    <button class="filter-btn f-critical" onclick="filterRisk('critical', this)">Crítico</button>
+    <button class="filter-btn f-high" onclick="filterRisk('high', this)">Alto</button>
+    <button class="filter-btn f-medium" onclick="filterRisk('medium', this)">Medio</button>
+    <button class="filter-btn f-low" onclick="filterRisk('low', this)">Bajo</button>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Buscar activo, amenaza..." oninput="searchTable(this.value)">
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-strip" id="statsStrip"></div>
+
+  <!-- TABLE -->
+  <div class="table-outer">
+    <table id="mainTable">
+      <thead>
+        <tr>
+          <th onclick="sortTable(0)">Asset <span class="sort-arrow">↕</span></th>
+          <th onclick="sortTable(1)">Threat <span class="sort-arrow">↕</span></th>
+          <th onclick="sortTable(2)">Vulnerability <span class="sort-arrow">↕</span></th>
+          <th onclick="sortTable(3)">Likelihood <span class="sort-arrow">↕</span></th>
+          <th onclick="sortTable(4)">Impact <span class="sort-arrow">↕</span></th>
+          <th onclick="sortTable(5)">Risk Level <span class="sort-arrow">↕</span></th>
+          <th>Existing Control</th>
+          <th>Annex A Ref</th>
+          <th onclick="sortTable(8)">Residual Risk <span class="sort-arrow">↕</span></th>
+          <th>Treatment</th>
+          <th>Responsible</th>
+          <th onclick="sortTable(11)">Review Date <span class="sort-arrow">↕</span></th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div class="empty-state" id="emptyState">No se encontraron registros con los filtros aplicados.</div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p>PLASTIHOGAR S.A.S. · Matriz de Análisis Comparativo de Infraestructura Tecnológica</p>
+    <p class="iso-ref">ISO/IEC 27001:2022 · Annex A Controls</p>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOut(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-head-left">
+        <div class="mid" id="mId"></div>
+        <h2 id="mTitle"></h2>
+      </div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="mBody"></div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────
+const data = [
+  {
+    id: "TI-01",
+    asset: "Servidor ERP", assetType: "Infraestructura Física",
+    threat: "Corte de energía eléctrica o picos de voltaje",
+    vulnerability: "Ausencia total de UPS y protección eléctrica en sala de servidores",
+    likelihood: 5, likelihood_label: "Muy Alta",
+    impact: 5, impact_label: "Crítico",
+    risk_level: "critical", risk_score: 25,
+    existing_control: "Ninguno. No existe respaldo eléctrico instalado en el rack.",
+    annex: ["A.7.8", "A.8.14"],
+    residual: "critical", residual_label: "Crítico",
+    treatment_type: "mitigate",
+    treatment: "Instalar UPS on-line de doble conversión (mínimo 10 kVA) para el rack. Agregar protector de línea en cada equipo crítico. Plazo: inmediato.",
+    responsible: "Gerencia TI", dept: "Infraestructura",
+    review_date: "2025-07-01", urgent: true
+  },
+  {
+    id: "TI-02",
+    asset: "Servidor de Archivos", assetType: "Infraestructura Física",
+    threat: "Pérdida irreversible de datos por fallo de hardware o siniestro",
+    vulnerability: "Backups manuales a discos externos sin verificación ni almacenamiento externo",
+    likelihood: 4, likelihood_label: "Alta",
+    impact: 5, impact_label: "Crítico",
+    risk_level: "critical", risk_score: 20,
+    existing_control: "Backup manual semanal en disco externo almacenado en la misma oficina.",
+    annex: ["A.8.13", "A.8.14"],
+    residual: "high", residual_label: "Alto",
+    treatment_type: "mitigate",
+    treatment: "Implementar estrategia 3-2-1: backup automático diario en NAS local + replicación en nube (Backblaze B2 / Azure Backup). Verificación semanal de integridad.",
+    responsible: "Analista TI", dept: "Infraestructura",
+    review_date: "2025-07-15", urgent: true
+  },
+  {
+    id: "TI-03",
+    asset: "Red WiFi Corporativa", assetType: "Red y Comunicaciones",
+    threat: "Acceso no autorizado a la red interna desde dispositivos externos o visitantes",
+    vulnerability: "Red WiFi sin segmentación por VLANs, sin control de acceso, contraseña compartida sin rotación",
+    likelihood: 4, likelihood_label: "Alta",
+    impact: 4, impact_label: "Alto",
+    risk_level: "critical", risk_score: 16,
+    existing_control: "Contraseña WPA2 básica compartida entre empleados y visitantes.",
+    annex: ["A.8.20", "A.8.21", "A.8.22"],
+    residual: "medium", residual_label: "Medio",
+    treatment_type: "mitigate",
+    treatment: "Implementar switches administrables con VLANs: VLAN Producción, VLAN Administración, VLAN Invitados. Migrar WiFi a WPA3-Enterprise. Portal cautivo para visitas.",
+    responsible: "Gerencia TI", dept: "Infraestructura",
+    review_date: "2025-08-01", urgent: false
+  },
+  {
+    id: "TI-04",
+    asset: "Sistema ERP", assetType: "Software de Negocio",
+    threat: "Explotación de vulnerabilidades conocidas en software sin soporte",
+    vulnerability: "ERP con licencia perpetua, sin actualizaciones ni parches de seguridad desde hace años",
+    likelihood: 4, likelihood_label: "Alta",
+    impact: 4, impact_label: "Alto",
+    risk_level: "critical", risk_score: 16,
+    existing_control: "Acceso restringido por usuario/contraseña. Sin parches de seguridad activos.",
+    annex: ["A.8.8", "A.8.19"],
+    residual: "high", residual_label: "Alto",
+    treatment_type: "mitigate",
+    treatment: "Corto plazo: aislar ERP en VLAN dedicada y restringir acceso a IPs autorizadas. Mediano plazo: evaluar migración a ERP SaaS (Odoo, SAP B1 Cloud, Siesa).",
+    responsible: "Gerencia General", dept: "Tecnología / Finanzas",
+    review_date: "2025-09-01", urgent: false
+  },
+  {
+    id: "TI-05",
+    asset: "Activos de Información", assetType: "Datos y Documentación",
+    threat: "Fuga de datos confidenciales, incumplimiento normativo (Ley 1581)",
+    vulnerability: "Sin política de seguridad de la información documentada ni clasificación de activos",
+    likelihood: 3, likelihood_label: "Media",
+    impact: 5, impact_label: "Crítico",
+    risk_level: "high", risk_score: 15,
+    existing_control: "Ningún control formal. Acceso a información basado en confianza sin controles técnicos.",
+    annex: ["A.5.1", "A.5.9", "A.5.12"],
+    residual: "medium", residual_label: "Medio",
+    treatment_type: "mitigate",
+    treatment: "Desarrollar Política de Seguridad de la Información (PSI) basada en ISO 27001. Clasificar activos de información. Capacitar a todo el personal. Plazo: 2 meses.",
+    responsible: "Gerencia General", dept: "Dirección / TI",
+    review_date: "2025-08-15", urgent: false
+  },
+  {
+    id: "TI-06",
+    asset: "Endpoints (PCs y Laptops)", assetType: "Dispositivos de Usuario",
+    threat: "Infección por ransomware o malware con propagación lateral en la red",
+    vulnerability: "Antivirus individual sin consola centralizada, sin EDR, sin control de actualizaciones",
+    likelihood: 3, likelihood_label: "Media",
+    impact: 5, impact_label: "Crítico",
+    risk_level: "high", risk_score: 15,
+    existing_control: "Antivirus instalado individualmente en cada equipo. Sin monitoreo centralizado.",
+    annex: ["A.8.7", "A.8.8"],
+    residual: "medium", residual_label: "Medio",
+    treatment_type: "mitigate",
+    treatment: "Implementar solución EDR con consola centralizada (ESET Protect / Sophos Central / Bitdefender GZ). Políticas de actualización automática. Restricción de USB.",
+    responsible: "Analista TI", dept: "Infraestructura",
+    review_date: "2025-08-01", urgent: false
+  },
+  {
+    id: "TI-07",
+    asset: "Cableado Estructurado", assetType: "Infraestructura Física",
+    threat: "Degradación del rendimiento de red y fallos intermitentes en producción",
+    vulnerability: "Cableado Cat5e instalado hace 8 años sin certificación ni pruebas de rendimiento recientes",
+    likelihood: 3, likelihood_label: "Media",
+    impact: 4, impact_label: "Alto",
+    risk_level: "high", risk_score: 12,
+    existing_control: "Mantenimiento visual periódico. Sin certificación técnica desde la instalación.",
+    annex: ["A.7.8"],
+    residual: "medium", residual_label: "Medio",
+    treatment_type: "mitigate",
+    treatment: "Contratar certificación de cableado con equipo Fluke. Reemplazar tramos críticos con Cat6A. Planificar reemplazo total en próxima renovación de planta.",
+    responsible: "Jefe de Planta", dept: "Infraestructura / Producción",
+    review_date: "2025-10-01", urgent: false
+  },
+  {
+    id: "TI-08",
+    asset: "Plataforma de Correo Electrónico", assetType: "Comunicaciones",
+    threat: "Phishing, suplantación de identidad y pérdida de comunicaciones corporativas",
+    vulnerability: "Uso de cuentas Gmail gratuitas sin dominio corporativo ni administración centralizada",
+    likelihood: 4, likelihood_label: "Alta",
+    impact: 3, impact_label: "Medio",
+    risk_level: "high", risk_score: 12,
+    existing_control: "Ninguno. Cada usuario gestiona su propia cuenta de forma independiente.",
+    annex: ["A.8.20", "A.6.8"],
+    residual: "low", residual_label: "Bajo",
+    treatment_type: "mitigate",
+    treatment: "Contratar Google Workspace Business Starter o Microsoft 365 Business Basic con dominio @plastihogar.com. Activar MFA obligatorio. Retención de mensajes 1 año.",
+    responsible: "Gerencia Administrativa", dept: "Administración / TI",
+    review_date: "2025-07-15", urgent: true
+  },
+  {
+    id: "TI-09",
+    asset: "Canal E-Commerce", assetType: "Sistemas Comerciales",
+    threat: "Errores de inventario, pedidos perdidos y pérdida de competitividad digital",
+    vulnerability: "Nula integración entre ERP y plataforma de ventas en línea; gestión 100% manual",
+    likelihood: 5, likelihood_label: "Muy Alta",
+    impact: 3, impact_label: "Medio",
+    risk_level: "high", risk_score: 15,
+    existing_control: "Proceso manual de transcripción de pedidos web al ERP por el equipo de e-commerce.",
+    annex: ["A.8.9", "A.8.24"],
+    residual: "medium", residual_label: "Medio",
+    treatment_type: "mitigate",
+    treatment: "Implementar middleware de integración (Make/Zapier) como solución temporal. Mediano plazo: migrar a ERP con módulo e-commerce nativo (Odoo + WooCommerce).",
+    responsible: "Jefe Comercial", dept: "Comercial / TI",
+    review_date: "2025-09-01", urgent: false
+  },
+  {
+    id: "TI-10",
+    asset: "Acceso a Internet", assetType: "Red y Comunicaciones",
+    threat: "Interrupción de servicios cloud, ventas online y comunicaciones en horas pico",
+    vulnerability: "100 Mbps compartido sin QoS ni enlace de respaldo (failover), sin priorización de tráfico",
+    likelihood: 3, likelihood_label: "Media",
+    impact: 3, impact_label: "Medio",
+    risk_level: "medium", risk_score: 9,
+    existing_control: "Único enlace de fibra óptica sin redundancia. Sin gestión de ancho de banda.",
+    annex: ["A.8.14", "A.8.20"],
+    residual: "low", residual_label: "Bajo",
+    treatment_type: "mitigate",
+    treatment: "Configurar QoS en router priorizando ERP y videoconferencias. Contratar enlace 4G LTE de respaldo para failover automático. Evaluar upgrade a 300 Mbps dedicado.",
+    responsible: "Analista TI", dept: "Infraestructura",
+    review_date: "2025-10-01", urgent: false
+  },
+  {
+    id: "TI-11",
+    asset: "Virtualización de Servidores", assetType: "Infraestructura Física",
+    threat: "Tiempo de inactividad prolongado ante fallo de hardware de servidor",
+    vulnerability: "Servidores físicos sin virtualización ni redundancia; un fallo detiene todas las operaciones",
+    likelihood: 2, likelihood_label: "Baja",
+    impact: 5, impact_label: "Crítico",
+    risk_level: "high", risk_score: 10,
+    existing_control: "Ninguno. Los servidores operan en hardware físico sin capa de virtualización.",
+    annex: ["A.8.14"],
+    residual: "medium", residual_label: "Medio",
+    treatment_type: "mitigate",
+    treatment: "Virtualizar ambos servidores con Proxmox VE o VMware ESXi Free. Configurar snapshots automáticos. Largo plazo: migrar ERP a nube con SLA de 99.9% disponibilidad.",
+    responsible: "Analista TI", dept: "Infraestructura",
+    review_date: "2025-10-01", urgent: false
+  },
+  {
+    id: "TI-12",
+    asset: "Gobernanza TI", assetType: "Gestión Organizacional",
+    threat: "Decisiones tecnológicas sin criterio técnico, proyectos sin continuidad",
+    vulnerability: "Sin responsable de TI dedicado; la tecnología se gestiona de forma reactiva",
+    likelihood: 5, likelihood_label: "Muy Alta",
+    impact: 3, impact_label: "Medio",
+    risk_level: "high", risk_score: 15,
+    existing_control: "Personal administrativo atiende incidentes TI de forma ad hoc sin procedimientos.",
+    annex: ["A.5.2", "A.6.1"],
+    residual: "medium", residual_label: "Medio",
+    treatment_type: "mitigate",
+    treatment: "Contratar Analista TI senior o engajar MSP (Managed Service Provider). Crear comité de TI. Definir hoja de ruta tecnológica alineada al plan de negocio.",
+    responsible: "Gerencia General", dept: "Dirección",
+    review_date: "2025-08-01", urgent: false
+  },
+  {
+    id: "TI-13",
+    asset: "Switches de Red", assetType: "Red y Comunicaciones",
+    threat: "Falta de visibilidad y control del tráfico de red, imposibilidad de aislar incidentes",
+    vulnerability: "Switches sin administración (unmanaged) que impiden configurar VLANs, QoS o monitoreo",
+    likelihood: 3, likelihood_label: "Media",
+    impact: 3, impact_label: "Medio",
+    risk_level: "medium", risk_score: 9,
+    existing_control: "Ninguno. Los switches no permiten ningún tipo de configuración o monitoreo.",
+    annex: ["A.8.20", "A.8.21"],
+    residual: "low", residual_label: "Bajo",
+    treatment_type: "mitigate",
+    treatment: "Reemplazar switches no administrables por switches gestionables L2 (Ubiquiti USW / TP-Link Omada). Habilita VLANs, monitoreo SNMP y control de puertos.",
+    responsible: "Analista TI", dept: "Infraestructura",
+    review_date: "2025-09-15", urgent: false
+  },
+  {
+    id: "TI-14",
+    asset: "Credenciales de Acceso", assetType: "Gestión de Identidades",
+    threat: "Acceso no autorizado a sistemas por contraseñas débiles o reutilizadas",
+    vulnerability: "Sin política de contraseñas, sin MFA, sin gestión centralizada de identidades",
+    likelihood: 3, likelihood_label: "Media",
+    impact: 4, impact_label: "Alto",
+    risk_level: "high", risk_score: 12,
+    existing_control: "Contraseñas de usuario en Windows y ERP establecidas sin criterio de seguridad.",
+    annex: ["A.8.2", "A.8.5"],
+    residual: "low", residual_label: "Bajo",
+    treatment_type: "mitigate",
+    treatment: "Implementar política de contraseñas (mínimo 12 caracteres, complejidad). Activar MFA en cuentas críticas. Evaluar gestor de contraseñas corporativo (Bitwarden Teams).",
+    responsible: "Analista TI", dept: "Infraestructura / RRHH",
+    review_date: "2025-08-15", urgent: false
+  },
+  {
+    id: "TI-15",
+    asset: "Datos de Clientes y Comerciales", assetType: "Datos y Documentación",
+    threat: "Incumplimiento de Ley 1581 de Protección de Datos Personales (Colombia)",
+    vulnerability: "Sin tratamiento formal de datos personales, sin consentimiento documentado, sin oficial de privacidad",
+    likelihood: 2, likelihood_label: "Baja",
+    impact: 4, impact_label: "Alto",
+    risk_level: "medium", risk_score: 8,
+    existing_control: "Ninguno documentado. Datos de clientes almacenados en ERP y hojas de cálculo sin cifrado.",
+    annex: ["A.5.12", "A.5.34"],
+    residual: "low", residual_label: "Bajo",
+    treatment_type: "transfer",
+    treatment: "Contratar asesoría jurídica para cumplimiento Ley 1581. Actualizar política de privacidad en sitio web. Designar oficial de protección de datos. Registrar bases ante SIC.",
+    responsible: "Gerencia Jurídica/Administrativa", dept: "Jurídica / Dirección",
+    review_date: "2025-11-01", urgent: false
+  },
+  {
+    id: "TI-16",
+    asset: "Planta de Producción Automatizada", assetType: "OT / Sistemas Industriales",
+    threat: "Interrupción de producción por intrusión en red OT desde red corporativa",
+    vulnerability: "Sin segmentación entre red corporativa IT y sistemas de control de planta (OT); maquinaria sin protección de red",
+    likelihood: 2, likelihood_label: "Baja",
+    impact: 5, impact_label: "Crítico",
+    risk_level: "high", risk_score: 10,
+    existing_control: "Ninguno. La maquinaria de producción comparte la misma red LAN que las PCs administrativas.",
+    annex: ["A.8.21", "A.8.22"],
+    residual: "medium", residual_label: "Medio",
+    treatment_type: "mitigate",
+    treatment: "Crear VLAN dedicada para sistemas OT/producción con firewall de capa 3 entre redes IT y OT. Aplicar principio de mínimo privilegio en acceso a red de planta.",
+    responsible: "Jefe de Planta / Gerencia TI", dept: "Producción / TI",
+    review_date: "2025-10-15", urgent: false
+  }
+];
+
+// ─────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────
+const levelLabel  = { critical:'Crítico', high:'Alto', medium:'Medio', low:'Bajo' };
+const treatLabel  = { mitigate:'Mitigar', avoid:'Evitar', transfer:'Transferir', accept:'Aceptar' };
+const impactColors= { critical:'var(--critical)', high:'var(--high)', medium:'var(--medium)', low:'var(--low)' };
+
+function dots(n, max=5) {
+  return Array.from({length: max}, (_,i) =>
+    `<span class="l-dot ${i < n ? 'filled' : ''}"></span>`).join('');
+}
+
+function impactColor(l) { return impactColors[l] || 'var(--ink)'; }
+
+function buildRow(d) {
+  return `
+  <tr class="data-row" data-level="${d.risk_level}" onclick="openModal('${d.id}')">
+    <td>
+      <div class="row-id">${d.id}</div>
+      <div class="asset-cell">
+        <span class="asset-name">${d.asset}</span>
+        <span class="asset-type">${d.assetType}</span>
+      </div>
+    </td>
+    <td style="font-size:12px;color:var(--ink2)">${d.threat}</td>
+    <td style="font-size:11px;color:var(--muted);line-height:1.5">${d.vulnerability}</td>
+    <td>
+      <div class="likelihood-label">${d.likelihood_label}</div>
+      <div class="likelihood-visual">${dots(d.likelihood)}</div>
+    </td>
+    <td>
+      <div class="impact-label">${d.impact_label}</div>
+      <div class="impact-bar"><div class="impact-fill" style="width:${d.impact*20}%;background:${impactColor(d.risk_level)}"></div></div>
+    </td>
+    <td>
+      <span class="risk-badge ${d.risk_level}">
+        <span class="risk-score">${d.risk_score}</span> ${levelLabel[d.risk_level]}
+      </span>
+    </td>
+    <td style="font-size:11px;color:var(--muted);line-height:1.5">${d.existing_control}</td>
+    <td>${d.annex.map(a => `<div><span class="annex-tag">${a}</span></div>`).join('')}</td>
+    <td><span class="residual-badge ${d.residual}">${levelLabel[d.residual]}</span></td>
+    <td>
+      <span class="treatment-pill ${d.treatment_type}">${treatLabel[d.treatment_type]}</span>
+      <div class="treatment-text">${d.treatment.substring(0, 90)}…</div>
+    </td>
+    <td>
+      <div class="resp-name">${d.responsible}</div>
+      <div class="resp-dept">${d.dept}</div>
+    </td>
+    <td><div class="date-cell ${d.urgent ? 'urgent' : ''}">${d.review_date}</div></td>
+  </tr>`;
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+function buildTable() {
+  document.getElementById('tableBody').innerHTML = data.map(buildRow).join('');
+}
+
+function buildStats() {
+  const counts = { critical:0, high:0, medium:0, low:0 };
+  data.forEach(d => counts[d.risk_level]++);
+  document.getElementById('statsStrip').innerHTML = `
+    <div class="stat-item s-total"><span class="stat-num">${data.length}</span><span class="stat-lbl">Total Activos</span></div>
+    <div class="stat-item s-critical"><span class="stat-num">${counts.critical}</span><span class="stat-lbl">Riesgo Crítico</span></div>
+    <div class="stat-item s-high"><span class="stat-num">${counts.high}</span><span class="stat-lbl">Riesgo Alto</span></div>
+    <div class="stat-item s-medium"><span class="stat-num">${counts.medium}</span><span class="stat-lbl">Riesgo Medio</span></div>
+    <div class="stat-item s-low"><span class="stat-num">${counts.low}</span><span class="stat-lbl">Riesgo Bajo</span></div>
+  `;
+}
+
+// ─────────────────────────────────────────────
+// FILTER & SEARCH
+// ─────────────────────────────────────────────
+let currentFilter = 'all';
+let currentSearch = '';
+
+function applyFilters() {
+  const rows = document.querySelectorAll('.data-row');
+  let visible = 0;
+  rows.forEach(row => {
+    const level = row.dataset.level;
+    const text = row.innerText.toLowerCase();
+    const matchFilter = currentFilter === 'all' || level === currentFilter;
+    const matchSearch = currentSearch === '' || text.includes(currentSearch.toLowerCase());
+    if (matchFilter && matchSearch) { row.classList.remove('hidden'); visible++; }
+    else row.classList.add('hidden');
+  });
+  document.getElementById('emptyState').style.display = visible === 0 ? 'block' : 'none';
+}
+
+function filterRisk(level, btn) {
+  currentFilter = level;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function searchTable(val) {
+  currentSearch = val;
+  applyFilters();
+}
+
+// ─────────────────────────────────────────────
+// SORT
+// ─────────────────────────────────────────────
+let sortDir = {};
+function sortTable(colIdx) {
+  sortDir[colIdx] = !sortDir[colIdx];
+  const ths = document.querySelectorAll('thead th');
+  ths.forEach((th, i) => {
+    th.classList.toggle('sorted', i === colIdx);
+    const arrow = th.querySelector('.sort-arrow');
+    if (arrow) arrow.textContent = i === colIdx ? (sortDir[colIdx] ? '↑' : '↓') : '↕';
+  });
+
+  const sortMap = [
+    d => d.asset, d => d.threat, d => d.vulnerability,
+    d => d.likelihood, d => d.impact, d => d.risk_score,
+    null, null,
+    d => d.residual,
+    null, d => d.responsible,
+    d => d.review_date
+  ];
+
+  if (!sortMap[colIdx]) return;
+  const sorted = [...data].sort((a,b) => {
+    const va = sortMap[colIdx](a), vb = sortMap[colIdx](b);
+    if (va < vb) return sortDir[colIdx] ? -1 : 1;
+    if (va > vb) return sortDir[colIdx] ? 1 : -1;
+    return 0;
+  });
+  document.getElementById('tableBody').innerHTML = sorted.map(buildRow).join('');
+}
+
+// ─────────────────────────────────────────────
+// MODAL
+// ─────────────────────────────────────────────
+function openModal(id) {
+  const d = data.find(x => x.id === id);
+  if (!d) return;
+  document.getElementById('mId').textContent = `${d.id} · ${d.assetType}`;
+  document.getElementById('mTitle').textContent = d.asset;
+  document.getElementById('mBody').innerHTML = `
+    <div class="m-section">
+      <div class="m-section-title">Evaluación del Riesgo</div>
+      <div class="score-visual">
+        <span class="score-big ${d.risk_level}">${d.risk_score}</span>
+        <div class="score-detail">
+          <div class="score-row">
+            Probabilidad: <strong>${d.likelihood_label} (${d.likelihood}/5)</strong>
+            <div class="score-bar"><div class="score-bar-fill" style="width:${d.likelihood*20}%"></div></div>
+          </div>
+          <div class="score-row">
+            Impacto: <strong>${d.impact_label} (${d.impact}/5)</strong>
+            <div class="score-bar"><div class="score-bar-fill" style="width:${d.impact*20}%"></div></div>
+          </div>
+          <div style="margin-top:6px"><span class="risk-badge ${d.risk_level}"><span class="risk-score">${d.risk_score}</span> ${levelLabel[d.risk_level]}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="m-section">
+      <div class="m-section-title">Detalles del Riesgo</div>
+      <div class="m-grid">
+        <div class="m-field full"><label>Amenaza Identificada</label><p>${d.threat}</p></div>
+        <div class="m-field full"><label>Vulnerabilidad</label><p>${d.vulnerability}</p></div>
+        <div class="m-field full"><label>Control Existente</label><p>${d.existing_control}</p></div>
+      </div>
+    </div>
+
+    <div class="m-section">
+      <div class="m-section-title">Tratamiento y Control</div>
+      <div class="m-grid">
+        <div class="m-field">
+          <label>Tipo de Tratamiento</label>
+          <p><span class="treatment-pill ${d.treatment_type}">${treatLabel[d.treatment_type]}</span></p>
+        </div>
+        <div class="m-field">
+          <label>Riesgo Residual</label>
+          <p><span class="residual-badge ${d.residual}">${levelLabel[d.residual]}</span></p>
+        </div>
+        <div class="m-field full"><label>Acción de Tratamiento</label><p>${d.treatment}</p></div>
+        <div class="m-field">
+          <label>Controles Annex A</label>
+          <p>${d.annex.map(a => `<span class="annex-tag">${a}</span> `).join('')}</p>
+        </div>
+        <div class="m-field">
+          <label>Fecha de Revisión</label>
+          <p class="date-cell ${d.urgent ? 'urgent' : ''}">${d.review_date}${d.urgent ? ' ⚠ Urgente' : ''}</p>
+        </div>
+        <div class="m-field">
+          <label>Responsable</label>
+          <p><span class="resp-name">${d.responsible}</span><br><span class="resp-dept">${d.dept}</span></p>
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModalOut(e) { if (e.target.id === 'modalOverlay') closeModal(); }
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+// ─────────────────────────────────────────────
+// BOOTSTRAP
+// ─────────────────────────────────────────────
+buildStats();
+buildTable();
+</script>
+</body>
+</html>
