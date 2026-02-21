@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matriz de Riesgos y Oportunidades — PLASTIHOGAR S.A.S.</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161d;
+    --surface2: #1a1e28;
+    --border: #252a38;
+    --accent: #e8ff3c;
+    --accent2: #ff4d6d;
+    --accent3: #3cf5e8;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --risk-critical: #ff1744;
+    --risk-high: #ff6d00;
+    --risk-medium: #ffd600;
+    --risk-low: #00e676;
+    --opp-high: #00e5ff;
+    --opp-medium: #7c4dff;
+    --opp-low: #69f0ae;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(232,255,60,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232,255,60,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  /* HEADER */
+  header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .header-left {
+    flex: 1;
+    min-width: 300px;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(232,255,60,0.1);
+    border: 1px solid rgba(232,255,60,0.3);
+    color: var(--accent);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 2px;
+    margin-bottom: 16px;
+  }
+
+  .tag::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: blink 1.5s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    color: var(--text);
+  }
+
+  h1 span {
+    color: var(--accent);
+    display: block;
+  }
+
+  .subtitle {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    line-height: 1.6;
+  }
+
+  .meta-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    border-radius: 4px;
+    min-width: 240px;
+    align-self: flex-start;
+  }
+
+  .meta-box p {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .meta-box strong {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    display: block;
+  }
+
+  .meta-box + .meta-box { margin-top: 8px; }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 4px;
+    border-radius: 4px;
+    width: fit-content;
+  }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  .tab-btn.active {
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 500;
+  }
+
+  .tab-btn:hover:not(.active) {
+    color: var(--text);
+    background: var(--surface2);
+  }
+
+  /* SUMMARY STATS */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+
+  .stat-card:hover { transform: translateY(-2px); }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .stat-card.critical::before { background: var(--risk-critical); }
+  .stat-card.high::before { background: var(--risk-high); }
+  .stat-card.medium::before { background: var(--risk-medium); }
+  .stat-card.low::before { background: var(--risk-low); }
+  .stat-card.opp::before { background: var(--opp-high); }
+
+  .stat-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-card.critical .stat-number { color: var(--risk-critical); }
+  .stat-card.high .stat-number { color: var(--risk-high); }
+  .stat-card.medium .stat-number { color: var(--risk-medium); }
+  .stat-card.low .stat-number { color: var(--risk-low); }
+  .stat-card.opp .stat-number { color: var(--opp-high); }
+
+  .stat-label {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* PANEL */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* RISK HEAT MAP */
+  .heatmap-section {
+    margin-bottom: 40px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .heatmap-grid {
+    display: grid;
+    grid-template-columns: 40px repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr) 40px;
+    gap: 3px;
+    height: 380px;
+    margin-bottom: 16px;
+  }
+
+  .hm-cell {
+    background: var(--surface);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: var(--muted);
+    cursor: default;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .hm-cell.data-cell {
+    cursor: pointer;
+  }
+
+  .hm-cell.data-cell:hover {
+    transform: scale(1.05);
+    z-index: 10;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+
+  .hm-label {
+    background: none;
+    font-size: 9px;
+    letter-spacing: 0.5px;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    text-align: center;
+  }
+
+  .hm-label.horizontal {
+    writing-mode: horizontal-tb;
+    transform: none;
+  }
+
+  .hm-count {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    color: rgba(255,255,255,0.9);
+  }
+
+  .hm-cell-level-1 { background: rgba(0,230,118,0.15); border: 1px solid rgba(0,230,118,0.2); }
+  .hm-cell-level-2 { background: rgba(255,214,0,0.15); border: 1px solid rgba(255,214,0,0.2); }
+  .hm-cell-level-3 { background: rgba(255,109,0,0.2); border: 1px solid rgba(255,109,0,0.3); }
+  .hm-cell-level-4 { background: rgba(255,23,68,0.2); border: 1px solid rgba(255,23,68,0.3); }
+  .hm-cell-level-5 { background: rgba(255,23,68,0.35); border: 1px solid rgba(255,23,68,0.5); }
+
+  /* TABLE */
+  .table-wrapper {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  thead tr {
+    background: var(--surface2);
+    border-bottom: 2px solid var(--border);
+  }
+
+  thead th {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 14px 16px;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+
+  tbody tr:hover { background: var(--surface); }
+  tbody tr:last-child { border-bottom: none; }
+
+  td {
+    padding: 14px 16px;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  td:first-child {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    color: var(--muted);
+  }
+
+  .risk-id {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    border-radius: 2px;
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .badge::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+  }
+
+  .badge.critical { background: rgba(255,23,68,0.15); color: var(--risk-critical); border: 1px solid rgba(255,23,68,0.3); }
+  .badge.critical::before { background: var(--risk-critical); }
+  .badge.high { background: rgba(255,109,0,0.15); color: var(--risk-high); border: 1px solid rgba(255,109,0,0.3); }
+  .badge.high::before { background: var(--risk-high); }
+  .badge.medium { background: rgba(255,214,0,0.1); color: var(--risk-medium); border: 1px solid rgba(255,214,0,0.25); }
+  .badge.medium::before { background: var(--risk-medium); }
+  .badge.low { background: rgba(0,230,118,0.1); color: var(--risk-low); border: 1px solid rgba(0,230,118,0.25); }
+  .badge.low::before { background: var(--risk-low); }
+
+  .badge.opp-high { background: rgba(0,229,255,0.1); color: var(--opp-high); border: 1px solid rgba(0,229,255,0.25); }
+  .badge.opp-high::before { background: var(--opp-high); }
+  .badge.opp-medium { background: rgba(124,77,255,0.15); color: #b39dff; border: 1px solid rgba(124,77,255,0.3); }
+  .badge.opp-medium::before { background: #b39dff; }
+  .badge.opp-low { background: rgba(105,240,174,0.1); color: var(--opp-low); border: 1px solid rgba(105,240,174,0.25); }
+  .badge.opp-low::before { background: var(--opp-low); }
+
+  .num-badge {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 28px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+  }
+
+  .num-badge.c { background: rgba(255,23,68,0.15); color: var(--risk-critical); border: 1px solid rgba(255,23,68,0.4); }
+  .num-badge.h { background: rgba(255,109,0,0.15); color: var(--risk-high); border: 1px solid rgba(255,109,0,0.4); }
+  .num-badge.m { background: rgba(255,214,0,0.1); color: var(--risk-medium); border: 1px solid rgba(255,214,0,0.3); }
+  .num-badge.l { background: rgba(0,230,118,0.1); color: var(--risk-low); border: 1px solid rgba(0,230,118,0.3); }
+
+  .cat-tag {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    padding: 2px 8px;
+    background: var(--surface2);
+    border-radius: 2px;
+    display: inline-block;
+  }
+
+  /* ISO clause badge */
+  .iso-tag {
+    font-size: 9px;
+    color: var(--accent);
+    background: rgba(232,255,60,0.08);
+    border: 1px solid rgba(232,255,60,0.2);
+    padding: 2px 6px;
+    border-radius: 2px;
+    letter-spacing: 0.5px;
+  }
+
+  /* Detail modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 90%;
+    max-width: 640px;
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: slideUp 0.25s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    gap: 16px;
+  }
+
+  .modal-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .modal-close {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 30px;
+    text-align: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+
+  .modal-close:hover { color: var(--text); border-color: var(--text); }
+
+  .modal-body {
+    padding: 20px 24px 24px;
+  }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .detail-item label {
+    display: block;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .detail-item p {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .detail-item.full { grid-column: span 2; }
+
+  .progress-bar {
+    height: 6px;
+    background: var(--surface2);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 24px;
+    align-items: center;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ISO Reference */
+  .iso-ref {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 16px 20px;
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 32px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .iso-ref strong {
+    color: var(--accent);
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  /* Footer */
+  footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: gap;
+    gap: 12px;
+  }
+
+  footer p {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  footer .iso-footer {
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 1px;
+  }
+
+  @media (max-width: 768px) {
+    .detail-grid { grid-template-columns: 1fr; }
+    .detail-item.full { grid-column: span 1; }
+    .heatmap-grid { height: 260px; }
+    .hm-count { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="header-left">
+      <div class="tag">ISO 9001:2015 · Cláusula 6.1</div>
+      <h1>Matriz de Riesgos<span>y Oportunidades</span></h1>
+      <p class="subtitle">PLASTIHOGAR S.A.S. · Diagnóstico de Infraestructura Tecnológica<br>Barranquilla, Colombia · 2025</p>
+    </div>
+    <div>
+      <div class="meta-box">
+        <p>Empresa</p>
+        <strong>PLASTIHOGAR S.A.S.</strong>
+      </div>
+      <div class="meta-box">
+        <p>Norma de referencia</p>
+        <strong>ISO 9001:2015</strong>
+      </div>
+      <div class="meta-box">
+        <p>Versión del documento</p>
+        <strong>v1.0 · 2025</strong>
+      </div>
+    </div>
+  </header>
+
+  <!-- ISO Reference -->
+  <div class="iso-ref">
+    <strong>REFERENCIA NORMATIVA ISO 9001:2015</strong>
+    La cláusula 6.1 de la norma ISO 9001:2015 <em>"Acciones para abordar riesgos y oportunidades"</em> requiere que la organización considere los factores del contexto (cláusula 4.1) y las partes interesadas (cláusula 4.2) para determinar riesgos y oportunidades que necesitan abordarse, con el fin de asegurar que el SGC logre sus resultados, aumentar los efectos deseables, prevenir o reducir efectos no deseados y lograr la mejora continua.
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row" id="statsRow"></div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('riesgos')">Riesgos</button>
+    <button class="tab-btn" onclick="switchTab('oportunidades')">Oportunidades</button>
+    <button class="tab-btn" onclick="switchTab('heatmap')">Mapa de Calor</button>
+  </div>
+
+  <!-- PANEL: RIESGOS -->
+  <div class="panel active" id="panel-riesgos">
+    <div class="legend">
+      <span style="font-size:10px;color:var(--muted);letter-spacing:1px;margin-right:4px;">NIVEL:</span>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--risk-critical)"></div>Crítico (≥15)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--risk-high)"></div>Alto (9–14)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--risk-medium)"></div>Medio (4–8)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--risk-low)"></div>Bajo (1–3)</div>
+    </div>
+    <div class="table-wrapper">
+      <table id="riskTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Categoría</th>
+            <th>Descripción del Riesgo</th>
+            <th>Cláusula ISO</th>
+            <th>Probabilidad</th>
+            <th>Impacto</th>
+            <th>Nivel</th>
+            <th>Tratamiento</th>
+          </tr>
+        </thead>
+        <tbody id="riskBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PANEL: OPORTUNIDADES -->
+  <div class="panel" id="panel-oportunidades">
+    <div class="legend">
+      <span style="font-size:10px;color:var(--muted);letter-spacing:1px;margin-right:4px;">PRIORIDAD:</span>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--opp-high)"></div>Alta</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#b39dff"></div>Media</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--opp-low)"></div>Baja</div>
+    </div>
+    <div class="table-wrapper">
+      <table id="oppTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Categoría</th>
+            <th>Descripción de la Oportunidad</th>
+            <th>Cláusula ISO</th>
+            <th>Viabilidad</th>
+            <th>Beneficio</th>
+            <th>Prioridad</th>
+            <th>Acción Propuesta</th>
+          </tr>
+        </thead>
+        <tbody id="oppBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PANEL: HEATMAP -->
+  <div class="panel" id="panel-heatmap">
+    <div class="section-title">Mapa de calor — Probabilidad vs Impacto (Riesgos)</div>
+    <div class="heatmap-grid" id="heatmapGrid"></div>
+    <p style="font-size:11px;color:var(--muted);margin-top:8px;">Haz clic en una celda para ver los riesgos asociados a ese nivel de probabilidad e impacto.</p>
+  </div>
+
+  <footer>
+    <p>Elaborado para: PLASTIHOGAR S.A.S. · Universidad Libre · Arquitectura Empresarial</p>
+    <span class="iso-footer">ISO 9001:2015 · Cláusula 6.1</span>
+  </footer>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div id="modalTag" class="tag" style="margin-bottom:8px"></div>
+        <h2 id="modalTitle"></h2>
+      </div>
+      <button class="modal-close" onclick="closeModalBtn()">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const risks = [
+  {
+    id: "R-01", cat: "Infraestructura Física", prob: 5, impact: 5,
+    desc: "Ausencia de UPS en áreas críticas: servidores y equipos administrativos sin respaldo eléctrico ante cortes o picos de voltaje.",
+    iso: "6.1 / 8.1", level: "critical",
+    cause: "No se han adquirido sistemas de protección eléctrica UPS para el rack de servidores ni para los puestos administrativos.",
+    effect: "Pérdida de datos no respaldados, daño irreversible en hardware, interrupción del ERP y detención de procesos productivos y comerciales.",
+    treatment: "Mitigar", action: "Instalar UPS on-line de doble conversión para servidor ERP y servidor de archivos; protección de línea en PCs críticas. Plazo inmediato."
+  },
+  {
+    id: "R-02", cat: "Continuidad de Negocio", prob: 4, impact: 5,
+    desc: "Backups manuales a discos externos: proceso no automatizado, sin verificación de integridad ni almacenamiento fuera de sitio.",
+    iso: "6.1 / 8.5.4", level: "critical",
+    cause: "No existe política de respaldo documentada ni solución automática de backup.",
+    effect: "Ante fallo de servidor, incendio o robo, la empresa puede perder toda la información histórica de operaciones, clientes y contabilidad.",
+    treatment: "Mitigar", action: "Implementar backup automatizado 3-2-1 (3 copias, 2 medios, 1 remoto). Usar solución en la nube (Backblaze B2 / Azure Backup). Plazo: 1 mes."
+  },
+  {
+    id: "R-03", cat: "Seguridad Lógica", prob: 4, impact: 4,
+    desc: "Red WiFi sin segmentación ni control de acceso: cualquier visitante o dispositivo no autorizado puede acceder a la red corporativa.",
+    iso: "6.1 / 8.1", level: "critical",
+    cause: "Switch sin administración, ausencia de VLANs, contraseña WiFi compartida sin rotación.",
+    effect: "Exposición de datos del ERP y archivos sensibles a acceso no autorizado, posibles ataques internos o desde dispositivos comprometidos.",
+    treatment: "Mitigar", action: "Segmentar red con VLANs (producción, administración, invitados). Implementar WPA3-Enterprise o radius básico. Switches administrables."
+  },
+  {
+    id: "R-04", cat: "Sistemas de Información", prob: 4, impact: 4,
+    desc: "ERP con licencia perpetua sin soporte actualizado: vulnerabilidades sin parche, sin evolución funcional ni integración moderna.",
+    iso: "6.1 / 7.1.3", level: "critical",
+    cause: "Decisión histórica de no renovar soporte por costos; el sistema lleva años sin actualizarse.",
+    effect: "Brechas de seguridad conocidas explotables, incompatibilidad con nuevas integraciones (e-commerce, BI), riesgo de fallo total sin soporte técnico.",
+    treatment: "Mitigar/Transferir", action: "Evaluar migración a ERP en la nube (SAP Business One, Odoo, Siesa). Corto plazo: mapeo funcional. Mediano plazo: migración."
+  },
+  {
+    id: "R-05", cat: "Seguridad Lógica", prob: 3, impact: 5,
+    desc: "Ausencia de política de seguridad informática documentada: sin normas claras sobre contraseñas, uso de dispositivos, clasificación de información.",
+    iso: "6.1 / 7.5", level: "high",
+    cause: "No se ha definido un marco de gobernanza TI ni se ha asignado responsable de seguridad de la información.",
+    effect: "Comportamientos de riesgo de usuarios internos, imposibilidad de gestionar incidentes formalmente, incumplimiento potencial de normativas (LGPD/habeas data).",
+    treatment: "Mitigar", action: "Elaborar política de SI basada en ISO 27001 simplificada. Incluir: contraseñas, clasificación de datos, uso de dispositivos, incidentes. Capacitación obligatoria."
+  },
+  {
+    id: "R-06", cat: "Infraestructura de Red", prob: 3, impact: 4,
+    desc: "Cableado categoría 5e instalado hace 8 años: velocidad máxima 1 Gbps pero degradado por el tiempo, sin certificación reciente.",
+    iso: "6.1 / 7.1.3", level: "high",
+    cause: "Inversión de infraestructura no actualizada; no se han realizado pruebas de certificación de cableado.",
+    effect: "Latencia en transferencias, cuellos de botella en red, fallos intermitentes que afectan productividad y consultas al ERP en horas pico.",
+    treatment: "Mitigar", action: "Certificar cableado existente. Reemplazar tramos críticos con Cat6A. Considerar migración total a Cat6A en renovación de planta."
+  },
+  {
+    id: "R-07", cat: "Comunicaciones", prob: 4, impact: 3,
+    desc: "Correo electrónico mediante cuentas Gmail gratuitas: sin dominio corporativo, sin control de administración, sin retención legal de mensajes.",
+    iso: "6.1 / 7.4", level: "high",
+    cause: "No se ha contratado solución de correo corporativo por costos o desconocimiento.",
+    effect: "Riesgo de phishing elevado, falta de profesionalismo ante clientes B2B, imposibilidad de recuperar correos ante baja de empleados, sin backup de comunicaciones.",
+    treatment: "Mitigar", action: "Migrar a Google Workspace Business Starter o Microsoft 365 Business Basic. Dominio @plastihogar.com. Control centralizado de cuentas."
+  },
+  {
+    id: "R-08", cat: "Continuidad de Negocio", prob: 3, impact: 3,
+    desc: "Internet de 100 Mbps compartido sin QoS: en horas pico toda la empresa compite por el mismo ancho de banda.",
+    iso: "6.1 / 8.5.1", level: "medium",
+    cause: "No existe priorización de tráfico ni enlace de respaldo (failover).",
+    effect: "Degradación de videollamadas, lentitud en acceso a plataformas cloud, afectación a ventas en línea y comunicación con clientes en momentos críticos.",
+    treatment: "Mitigar", action: "Implementar QoS en router. Contratar enlace secundario 4G LTE como failover. Considerar upgrade a fibra 300 Mbps dedicado."
+  },
+  {
+    id: "R-09", cat: "Comercial / E-commerce", prob: 4, impact: 3,
+    desc: "Nula integración entre ERP local y plataforma de ventas en línea: pedidos digitales se gestionan manualmente.",
+    iso: "6.1 / 8.2.1", level: "high",
+    cause: "ERP desactualizado sin APIs, plataforma web básica sin conectores.",
+    effect: "Errores de inventario, doble digitación, retrasos en procesamiento de pedidos, insatisfacción del cliente digital, pérdida de competitividad.",
+    treatment: "Mitigar", action: "Como paso previo a nueva ERP: implementar middleware de integración. A mediano plazo: ERP con módulo e-commerce nativo."
+  },
+  {
+    id: "R-10", cat: "Talento y Gobernanza TI", prob: 5, impact: 3,
+    desc: "Sin responsable de TI dedicado: la tecnología es gestionada de forma reactiva por personal sin perfil técnico especializado.",
+    iso: "6.1 / 7.1.2", level: "high",
+    cause: "No se ha definido estructura organizacional TI ni plan de capacidades tecnológicas.",
+    effect: "Tiempos de respuesta altos ante incidentes, decisiones tecnológicas sin criterio técnico, proyectos de mejora sin continuidad ni seguimiento.",
+    treatment: "Aceptar/Mitigar", action: "Contratar analista TI o líder de infraestructura. Alternativamente: contrato de MSP (Managed Service Provider) para gestión proactiva."
+  },
+  {
+    id: "R-11", cat: "Seguridad Lógica", prob: 2, impact: 5,
+    desc: "Antivirus individual por equipo sin consola centralizada: sin visibilidad unificada de amenazas ni actualizaciones centralizadas.",
+    iso: "6.1 / 8.1", level: "high",
+    cause: "Implementación básica y descentralizada de seguridad endpoint.",
+    effect: "Un equipo comprometido con ransomware puede propagarse a la red. Sin consola central, la detección puede tardar horas o días.",
+    treatment: "Mitigar", action: "Implementar EDR/antivirus con consola centralizada (Sophos Intercept X, ESET Protect, Bitdefender GravityZone). Incluir en política de SI."
+  },
+  {
+    id: "R-12", cat: "Infraestructura de Datos", prob: 2, impact: 4,
+    desc: "Servidor único para ERP sin redundancia ni alta disponibilidad: un fallo de hardware detiene todas las operaciones.",
+    iso: "6.1 / 8.5.4", level: "medium",
+    cause: "Solo 2 servidores en rack, sin virtualización ni redundancia configurada.",
+    effect: "Tiempo de inactividad no planificado que puede extenderse días si el fallo requiere reposición de hardware.",
+    treatment: "Mitigar", action: "Virtualizar ambos servidores (Proxmox VE / VMware ESXi Free). Configurar snapshots. A mediano plazo: migrar ERP a nube con SLA de disponibilidad."
+  }
+];
+
+const opportunities = [
+  {
+    id: "O-01", cat: "Transformación Digital", viability: 5, benefit: 5,
+    desc: "Migración del ERP a la nube (SaaS): acceso desde cualquier lugar, actualizaciones automáticas, escalabilidad y soporte continuo.",
+    iso: "6.1 / 9.1", priority: "opp-high",
+    how: "Evaluar Odoo Community/Enterprise o Siesa Cloud. Permite integración nativa con e-commerce, contabilidad en línea y reportes en tiempo real.",
+    impact: "Elimina riesgo de ERP obsoleto, mejora productividad, habilita toma de decisiones basada en datos, reduce costo de infraestructura local."
+  },
+  {
+    id: "O-02", cat: "E-commerce y Canales Digitales", viability: 5, benefit: 5,
+    desc: "Desarrollo de canal e-commerce robusto con integración a ERP: venta 24/7, catálogo digital, gestión automatizada de inventario y pedidos.",
+    iso: "6.1 / 8.2", priority: "opp-high",
+    how: "Implementar WooCommerce o Shopify con conector a ERP. Habilitar pagos PSE/tarjeta. Portal B2B para distribuidores.",
+    impact: "Ampliación de mercado más allá de Barranquilla, reducción de carga operativa del equipo comercial, aumento de ingresos digitales."
+  },
+  {
+    id: "O-03", cat: "Seguridad y Cumplimiento", viability: 4, benefit: 4,
+    desc: "Implementación de Sistema de Gestión de Seguridad de la Información (SGSI) basado en ISO 27001: protección de datos y cumplimiento normativo.",
+    iso: "6.1 / 7.5", priority: "opp-high",
+    how: "Elaborar política de seguridad, clasificación de activos de información, plan de tratamiento de riesgos SI. Capacitación del personal.",
+    impact: "Diferenciación competitiva ante clientes grandes (retailers), cumplimiento Ley 1581/LGPD, reducción de incidentes de seguridad."
+  },
+  {
+    id: "O-04", cat: "Infraestructura y Conectividad", viability: 4, benefit: 4,
+    desc: "Modernización de red LAN/WiFi con switches administrables y VLANs: mayor control, visibilidad y seguridad de la infraestructura de red.",
+    iso: "6.1 / 7.1.3", priority: "opp-high",
+    how: "Instalar switches gestionables L2/L3 (Ubiquiti, TP-Link Omada). Segmentar red por área funcional. WiFi enterprise con portal cautivo para visitas.",
+    impact: "Reducción de incidentes de red, mejor rendimiento, base habilitante para expansión tecnológica futura."
+  },
+  {
+    id: "O-05", cat: "Business Intelligence", viability: 3, benefit: 5,
+    desc: "Implementación de analítica de datos y dashboards gerenciales: visibilidad en tiempo real de producción, ventas, inventario y KPIs financieros.",
+    iso: "6.1 / 9.1.3", priority: "opp-medium",
+    how: "Integrar Power BI o Google Looker Studio con ERP. Dashboards de: ventas por canal, rotación de inventario, productividad planta, márgenes por producto.",
+    impact: "Decisiones gerenciales basadas en datos, detección temprana de desviaciones, mejora de la planificación de producción y compras."
+  },
+  {
+    id: "O-06", cat: "Gestión de Calidad", viability: 4, benefit: 3,
+    desc: "Implementación formal de un Sistema de Gestión de Calidad ISO 9001: marco estructurado para mejora continua de procesos productivos y administrativos.",
+    iso: "6.1 / 10.3", priority: "opp-medium",
+    how: "Levantar procesos actuales, documentar procedimientos clave, implementar ciclo PHVA, auditorías internas, revisión por la dirección.",
+    impact: "Habilitación para certificación ISO 9001 (diferenciador ante retailers y clientes institucionales), reducción de no conformidades, cultura de mejora."
+  },
+  {
+    id: "O-07", cat: "Comunicaciones y Colaboración", viability: 5, benefit: 3,
+    desc: "Migración a suite de productividad en la nube (Microsoft 365 / Google Workspace): correo corporativo, colaboración en documentos, videoconferencias.",
+    iso: "6.1 / 7.4", priority: "opp-medium",
+    how: "Contratar M365 Business Basic o Google Workspace Starter. Dominio corporativo, Teams/Meet para comunicación interna, OneDrive/Drive para documentos.",
+    impact: "Elimina uso de cuentas gratuitas, mejora imagen corporativa, facilita trabajo remoto del equipo comercial, centraliza comunicaciones."
+  },
+  {
+    id: "O-08", cat: "Talento Digital", viability: 3, benefit: 4,
+    desc: "Definición de una hoja de ruta de transformación digital y creación del rol de Líder de Tecnología / CTO parcial.",
+    iso: "6.1 / 7.1.2", priority: "opp-medium",
+    how: "Contratar analista TI senior o engajar consultor TI. Crear comité de transformación digital con representantes de todas las áreas.",
+    impact: "Gobernanza tecnológica efectiva, continuidad de proyectos, alineación tecnología-negocio, ROI medible en inversiones TI."
+  },
+  {
+    id: "O-09", cat: "Resiliencia Operativa", viability: 5, benefit: 3,
+    desc: "Desarrollo de Plan de Continuidad de Negocio (BCP) y Plan de Recuperación ante Desastres (DRP) para TI.",
+    iso: "6.1 / 8.5.4", priority: "opp-low",
+    how: "Documentar BIA (Business Impact Analysis), definir RTO/RPO por sistema crítico, establecer procedimientos de respuesta y recuperación, realizar simulacros.",
+    impact: "Reducción del impacto ante incidentes mayores (ransomware, incendio, corte eléctrico prolongado), confianza de clientes y socios."
+  },
+  {
+    id: "O-10", cat: "Automatización", viability: 2, benefit: 4,
+    desc: "Automatización de procesos con IA y RPA: automatización de facturación, gestión de pedidos, respuestas a clientes frecuentes, reportes operativos.",
+    iso: "6.1 / 8.5", priority: "opp-low",
+    how: "Una vez migrado el ERP a nube: implementar bots RPA con Power Automate o Make (Integromat). Chatbot para atención a clientes B2C en redes sociales.",
+    impact: "Reducción de carga operativa del equipo administrativo, menor margen de error en procesos repetitivos, escala del negocio sin incremento proporcional de personal."
+  }
+];
+
+// ============================================================
+// STATS
+// ============================================================
+function buildStats() {
+  const counts = { critical: 0, high: 0, medium: 0, low: 0 };
+  risks.forEach(r => counts[r.level]++);
+
+  const row = document.getElementById('statsRow');
+  row.innerHTML = `
+    <div class="stat-card critical"><div class="stat-number">${counts.critical}</div><div class="stat-label">Riesgos Críticos</div></div>
+    <div class="stat-card high"><div class="stat-number">${counts.high}</div><div class="stat-label">Riesgos Altos</div></div>
+    <div class="stat-card medium"><div class="stat-number">${counts.medium}</div><div class="stat-label">Riesgos Medios</div></div>
+    <div class="stat-card low"><div class="stat-number">${counts.low}</div><div class="stat-label">Riesgos Bajos</div></div>
+    <div class="stat-card opp"><div class="stat-number">${opportunities.length}</div><div class="stat-label">Oportunidades</div></div>
+  `;
+}
+
+// ============================================================
+// RISK TABLE
+// ============================================================
+const levelLabel = { critical: 'Crítico', high: 'Alto', medium: 'Medio', low: 'Bajo' };
+const levelClass = { critical: 'c', high: 'h', medium: 'm', low: 'l' };
+
+function buildRiskTable() {
+  const tbody = document.getElementById('riskBody');
+  tbody.innerHTML = risks.map((r, i) => `
+    <tr onclick="openRiskModal(${i})">
+      <td><span class="risk-id" style="background:rgba(232,255,60,0.08);color:var(--accent);border:1px solid rgba(232,255,60,0.2)">${r.id}</span></td>
+      <td><span class="cat-tag">${r.cat}</span></td>
+      <td style="max-width:320px;font-size:12px">${r.desc}</td>
+      <td><span class="iso-tag">${r.iso}</span></td>
+      <td><span class="num-badge ${levelClass[r.level]}">${r.prob}</span></td>
+      <td><span class="num-badge ${levelClass[r.level]}">${r.impact}</span></td>
+      <td><span class="badge ${r.level}">${levelLabel[r.level]} (${r.prob * r.impact})</span></td>
+      <td style="font-size:11px;color:var(--muted)">${r.treatment}</td>
+    </tr>
+  `).join('');
+}
+
+// ============================================================
+// OPP TABLE
+// ============================================================
+const prioLabel = { 'opp-high': 'Alta', 'opp-medium': 'Media', 'opp-low': 'Baja' };
+
+function buildOppTable() {
+  const tbody = document.getElementById('oppBody');
+  tbody.innerHTML = opportunities.map((o, i) => `
+    <tr onclick="openOppModal(${i})">
+      <td><span class="risk-id" style="background:rgba(0,229,255,0.08);color:var(--opp-high);border:1px solid rgba(0,229,255,0.2)">${o.id}</span></td>
+      <td><span class="cat-tag">${o.cat}</span></td>
+      <td style="max-width:320px;font-size:12px">${o.desc}</td>
+      <td><span class="iso-tag">${o.iso}</span></td>
+      <td><span class="num-badge" style="background:rgba(0,229,255,0.1);color:var(--opp-high);border:1px solid rgba(0,229,255,0.3)">${o.viability}</span></td>
+      <td><span class="num-badge" style="background:rgba(0,229,255,0.1);color:var(--opp-high);border:1px solid rgba(0,229,255,0.3)">${o.benefit}</span></td>
+      <td><span class="badge ${o.priority}">${prioLabel[o.priority]}</span></td>
+      <td style="font-size:11px;color:var(--muted);max-width:200px">${o.how.substring(0, 80)}...</td>
+    </tr>
+  `).join('');
+}
+
+// ============================================================
+// HEATMAP
+// ============================================================
+function buildHeatmap() {
+  // Count risks per (prob, impact) cell
+  const grid = {};
+  risks.forEach(r => {
+    const key = `${r.prob}-${r.impact}`;
+    if (!grid[key]) grid[key] = [];
+    grid[key].push(r);
+  });
+
+  const container = document.getElementById('heatmapGrid');
+  container.innerHTML = '';
+
+  const impactLabels = ['','Muy Bajo','Bajo','Medio','Alto','Muy Alto'];
+  const probLabels   = ['','Muy Bajo','Bajo','Medio','Alto','Muy Alto'];
+
+  // Build 6×6 grid: rows = prob (5..1), cols = impact (1..5), plus labels
+  // Row by row from top (prob=5) to bottom (prob=1), then label row
+
+  for (let p = 5; p >= 1; p--) {
+    // Y-axis label
+    const lbl = document.createElement('div');
+    lbl.className = 'hm-cell hm-label';
+    lbl.textContent = probLabels[p];
+    container.appendChild(lbl);
+
+    for (let im = 1; im <= 5; im++) {
+      const score = p * im;
+      const level = score >= 15 ? 5 : score >= 9 ? 4 : score >= 6 ? 3 : score >= 3 ? 2 : 1;
+      const key = `${p}-${im}`;
+      const items = grid[key] || [];
+
+      const cell = document.createElement('div');
+      cell.className = `hm-cell data-cell hm-cell-level-${level}`;
+      if (items.length > 0) {
+        cell.innerHTML = `<span class="hm-count">${items.length}</span>`;
+        cell.title = items.map(r => r.id).join(', ');
+        cell.onclick = () => showHeatmapItems(p, im, items);
+      }
+      container.appendChild(cell);
+    }
+  }
+
+  // X-axis labels
+  const empty = document.createElement('div');
+  empty.className = 'hm-cell';
+  empty.style.background = 'none';
+  container.appendChild(empty);
+
+  for (let im = 1; im <= 5; im++) {
+    const lbl = document.createElement('div');
+    lbl.className = 'hm-cell hm-label horizontal';
+    lbl.textContent = impactLabels[im];
+    container.appendChild(lbl);
+  }
+
+  // Axis titles
+  const yTitle = document.createElement('div');
+  yTitle.style.cssText = 'font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:8px;grid-column:1/-1;text-align:center';
+  yTitle.textContent = '← IMPACTO →';
+  container.after(yTitle);
+}
+
+function showHeatmapItems(p, im, items) {
+  const modal = document.getElementById('modalOverlay');
+  document.getElementById('modalTag').textContent = `P=${p} × I=${im} = ${p*im}`;
+  document.getElementById('modalTitle').textContent = `Riesgos en esta celda (${items.length})`;
+  document.getElementById('modalBody').innerHTML = items.map(r => `
+    <div style="padding:12px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <span class="risk-id" style="background:rgba(232,255,60,0.08);color:var(--accent);border:1px solid rgba(232,255,60,0.2)">${r.id}</span>
+        <span class="badge ${r.level}">${levelLabel[r.level]}</span>
+      </div>
+      <p style="font-size:13px;line-height:1.5;margin-bottom:6px">${r.desc}</p>
+      <p style="font-size:11px;color:var(--muted)">Tratamiento: ${r.treatment} · ${r.action}</p>
+    </div>
+  `).join('');
+  modal.classList.add('open');
+}
+
+// ============================================================
+// MODALS
+// ============================================================
+function openRiskModal(i) {
+  const r = risks[i];
+  document.getElementById('modalTag').textContent = `${r.id} · ISO ${r.iso}`;
+  document.getElementById('modalTitle').textContent = r.cat;
+  const score = r.prob * r.impact;
+  const pct = (score / 25) * 100;
+  const colors = { critical: 'var(--risk-critical)', high: 'var(--risk-high)', medium: 'var(--risk-medium)', low: 'var(--risk-low)' };
+  document.getElementById('modalBody').innerHTML = `
+    <div class="detail-grid">
+      <div class="detail-item full">
+        <label>Descripción del Riesgo</label>
+        <p>${r.desc}</p>
+      </div>
+      <div class="detail-item">
+        <label>Causa raíz</label>
+        <p>${r.cause}</p>
+      </div>
+      <div class="detail-item">
+        <label>Efecto potencial</label>
+        <p>${r.effect}</p>
+      </div>
+      <div class="detail-item">
+        <label>Probabilidad (1–5)</label>
+        <p><strong>${r.prob}</strong></p>
+        <div class="progress-bar"><div class="progress-fill" style="width:${r.prob*20}%;background:${colors[r.level]}"></div></div>
+      </div>
+      <div class="detail-item">
+        <label>Impacto (1–5)</label>
+        <p><strong>${r.impact}</strong></p>
+        <div class="progress-bar"><div class="progress-fill" style="width:${r.impact*20}%;background:${colors[r.level]}"></div></div>
+      </div>
+      <div class="detail-item">
+        <label>Puntuación de riesgo</label>
+        <p><strong>${score} / 25</strong> — <span class="badge ${r.level}">${levelLabel[r.level]}</span></p>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${colors[r.level]}"></div></div>
+      </div>
+      <div class="detail-item">
+        <label>Tipo de tratamiento</label>
+        <p>${r.treatment}</p>
+      </div>
+      <div class="detail-item full">
+        <label>Acción propuesta</label>
+        <p>${r.action}</p>
+      </div>
+      <div class="detail-item">
+        <label>Cláusula ISO 9001</label>
+        <p><span class="iso-tag">${r.iso}</span></p>
+      </div>
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function openOppModal(i) {
+  const o = opportunities[i];
+  const colors = { 'opp-high': 'var(--opp-high)', 'opp-medium': '#b39dff', 'opp-low': 'var(--opp-low)' };
+  document.getElementById('modalTag').textContent = `${o.id} · ISO ${o.iso}`;
+  document.getElementById('modalTitle').textContent = o.cat;
+  document.getElementById('modalBody').innerHTML = `
+    <div class="detail-grid">
+      <div class="detail-item full">
+        <label>Descripción de la Oportunidad</label>
+        <p>${o.desc}</p>
+      </div>
+      <div class="detail-item">
+        <label>Viabilidad (1–5)</label>
+        <p><strong>${o.viability}</strong></p>
+        <div class="progress-bar"><div class="progress-fill" style="width:${o.viability*20}%;background:${colors[o.priority]}"></div></div>
+      </div>
+      <div class="detail-item">
+        <label>Beneficio esperado (1–5)</label>
+        <p><strong>${o.benefit}</strong></p>
+        <div class="progress-bar"><div class="progress-fill" style="width:${o.benefit*20}%;background:${colors[o.priority]}"></div></div>
+      </div>
+      <div class="detail-item full">
+        <label>Cómo aprovecharla</label>
+        <p>${o.how}</p>
+      </div>
+      <div class="detail-item full">
+        <label>Impacto en el negocio</label>
+        <p>${o.impact}</p>
+      </div>
+      <div class="detail-item">
+        <label>Prioridad</label>
+        <p><span class="badge ${o.priority}">${prioLabel[o.priority]}</span></p>
+      </div>
+      <div class="detail-item">
+        <label>Cláusula ISO 9001</label>
+        <p><span class="iso-tag">${o.iso}</span></p>
+      </div>
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModalBtn();
+}
+
+function closeModalBtn() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function switchTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+buildStats();
+buildRiskTable();
+buildOppTable();
+buildHeatmap();
+</script>
+</body>
+</html>
